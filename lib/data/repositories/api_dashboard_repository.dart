@@ -51,11 +51,19 @@ class ApiDashboardRepository implements DashboardRepository {
             .toList(),
         topTicketsAssets: (json['topTicketsAssets'] as List? ?? [])
             .map((e) {
-              // The backend has a structure: AssetTicketCountDto { AssetDto Asset, int TicketCount }
-              // But wait, in the backend it might serialize properties as camelCase, e.g., 'asset' and 'ticketCount'
-              final assetJson = e['asset'] ?? e['Asset'];
-              final asset = Asset.fromJson(assetJson as Map<String, dynamic>);
-              final ticketCount = e['ticketCount'] ?? e['TicketCount'] ?? 0;
+              final asset = Asset(
+                id: e['assetId'] as String? ?? '',
+                assetCode: e['assetCode'] as String? ?? '',
+                assetName: e['assetName'] as String? ?? '',
+                assetType: '',
+                department: e['department'] as String? ?? '',
+                assignedUser: '',
+                purchaseDate: DateTime.now(),
+                warrantyExpiry: DateTime.now(),
+                status: AssetStatus.available,
+                note: '',
+              );
+              final ticketCount = e['ticketCount'] ?? 0;
               return AssetTicketCount(
                 asset: asset,
                 ticketCount: ticketCount as int,
