@@ -95,6 +95,10 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
+// Bind to PORT provided by Render (or default for local dev)
+var port = Environment.GetEnvironmentVariable("PORT") ?? "5056";
+app.Urls.Add($"http://0.0.0.0:{port}");
+
 // Automatically recreate and migrate database on startup
 using (var scope = app.Services.CreateScope())
 {
@@ -124,7 +128,11 @@ if (app.Environment.IsDevelopment() || true) // enable Swagger in all environmen
     });
 }
 
-app.UseHttpsRedirection();
+// Only use HTTPS redirection in development; Render handles TLS at the proxy layer
+if (app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 
 app.UseAuthentication();
 app.UseAuthorization();
