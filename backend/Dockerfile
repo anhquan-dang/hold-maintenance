@@ -16,10 +16,10 @@ WORKDIR /app
 
 COPY --from=build /app/publish .
 
-# Render provides PORT env var; default to 10000
-ENV ASPNETCORE_URLS=http://+:10000
 ENV ASPNETCORE_ENVIRONMENT=Production
 
+# Render injects PORT at runtime (default 10000)
+# Program.cs reads PORT and binds to 0.0.0.0:PORT
 EXPOSE 10000
 
 ENTRYPOINT ["dotnet", "HoldMaintenance.Api.dll"]
